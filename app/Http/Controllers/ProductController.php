@@ -41,10 +41,12 @@ class ProductController extends Controller
             'images.*' => ['sometimes', 'file', 'mimes:jpg,jpeg,png,webp,avif,heic,heif', 'max:4096'],
         ]);
 
+        $slug = $this->generateUniqueSlug($data['name']);
+
         $product = Product::create([
             'category_id' => $data['category_id'],
             'name' => $data['name'],
-            'slug' => Str::slug($data['name']),
+            'slug' => $slug,
             'description' => $data['description'] ?? null,
             'price' => $data['price'],
             'stock' => $data['stock'],
@@ -91,10 +93,12 @@ class ProductController extends Controller
             'cover_image_id' => ['nullable', 'integer', 'exists:product_images,id'],
         ]);
 
+        $slug = $this->generateUniqueSlug($data['name'], $product->id);
+
         $product->update([
             'category_id' => $data['category_id'],
             'name' => $data['name'],
-            'slug' => Str::slug($data['name']),
+            'slug' => $slug,
             'description' => $data['description'] ?? null,
             'price' => $data['price'],
             'stock' => $data['stock'],
@@ -140,5 +144,21 @@ class ProductController extends Controller
         $product->delete();
 
         return redirect()->route('admin.products.index')->with('success', 'Producto eliminado.');
+    }
+
+    private function generateUniqueSlug(string $name, ?int $ignoreId = null): string
+    {
+        $baseSlug = Str::slug($name);
+        $slug = $baseSlug;
+        $counter = 2;
+
+        while (Product::where('slug', $slug)
+            ->when($ignoreId, fn ($query) => $query->where('id', '!=', $ignoreId))
+            ->exists()) {
+            $slug = $baseSlug.'-'.$counter;
+            $counter++;
+        }
+
+        return $slug;
     }
 }

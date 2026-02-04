@@ -30,10 +30,12 @@ class ProductController extends Controller
             'is_active' => ['nullable', 'boolean'],
         ]);
 
+        $slug = $this->generateUniqueSlug($data['name']);
+
         $product = Product::create([
             'category_id' => $data['category_id'],
             'name' => $data['name'],
-            'slug' => Str::slug($data['name']),
+            'slug' => $slug,
             'description' => $data['description'] ?? null,
             'price' => $data['price'],
             'stock' => $data['stock'],
@@ -54,10 +56,12 @@ class ProductController extends Controller
             'is_active' => ['nullable', 'boolean'],
         ]);
 
+        $slug = $this->generateUniqueSlug($data['name'], $product->id);
+
         $product->update([
             'category_id' => $data['category_id'],
             'name' => $data['name'],
-            'slug' => Str::slug($data['name']),
+            'slug' => $slug,
             'description' => $data['description'] ?? null,
             'price' => $data['price'],
             'stock' => $data['stock'],
@@ -72,5 +76,21 @@ class ProductController extends Controller
         $product->delete();
 
         return response()->json(['message' => 'Eliminado']);
+    }
+
+    private function generateUniqueSlug(string $name, ?int $ignoreId = null): string
+    {
+        $baseSlug = Str::slug($name);
+        $slug = $baseSlug;
+        $counter = 2;
+
+        while (Product::where('slug', $slug)
+            ->when($ignoreId, fn ($query) => $query->where('id', '!=', $ignoreId))
+            ->exists()) {
+            $slug = $baseSlug.'-'.$counter;
+            $counter++;
+        }
+
+        return $slug;
     }
 }
