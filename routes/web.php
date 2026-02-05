@@ -12,8 +12,8 @@ use App\Http\Controllers\ShopController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', [ShopController::class, 'index'])->middleware('cache.response:60')->name('home');
-Route::get('/producto/{product:slug}', [ShopController::class, 'show'])->name('product.show');
-Route::get('/categoria/{category:slug}', [ShopController::class, 'category'])->name('category.show');
+Route::get('/producto/{product:slug}', [ShopController::class, 'show'])->middleware('cache.response:60')->name('product.show');
+Route::get('/categoria/{category:slug}', [ShopController::class, 'category'])->middleware('cache.response:60')->name('category.show');
 
 Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
 Route::post('/login', [AuthController::class, 'login']);
