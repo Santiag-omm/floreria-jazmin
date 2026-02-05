@@ -37,6 +37,11 @@ class Product extends Model
 
     public function coverImage(): ?ProductImage
     {
+        if ($this->relationLoaded('images')) {
+            return $this->images->firstWhere('is_cover', true)
+                ?? $this->images->first();
+        }
+
         return $this->images()->where('is_cover', true)->first();
     }
 
