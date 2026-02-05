@@ -1,5 +1,5 @@
 app = "floreria-jazmin"
-primary_region = "gru"
+primary_region = "qro"
 
 [build]
   dockerfile = "Dockerfile"
