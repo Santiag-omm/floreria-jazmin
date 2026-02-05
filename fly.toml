@@ -18,6 +18,7 @@ primary_region = "qro"
   AWS_ENDPOINT = "https://rzwflcyrukdmtsufmjhq.storage.supabase.co/storage/v1/s3"
   AWS_URL = "https://rzwflcyrukdmtsufmjhq.supabase.co/storage/v1/object/public/productos"
   AWS_USE_PATH_STYLE_ENDPOINT = "true"
+  CACHE_STORE = "file"
 
 [http_service]
   internal_port = 80
