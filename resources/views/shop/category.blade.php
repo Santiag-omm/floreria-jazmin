@@ -8,7 +8,7 @@
         <div class="col-6 col-md-4 col-lg-3">
             <div class="card border-0 shadow-sm h-100">
                 @if($product->coverImage())
-                    <img class="card-img-top" src="{{ asset('storage/' . $product->coverImage()->path) }}" alt="{{ $product->name }}">
+                    <img class="card-img-top" src="{{ $product->coverImage()->url }}" alt="{{ $product->name }}">
                 @else
                     <div class="bg-body-secondary d-flex align-items-center justify-content-center" style="height:180px;">
                         <span class="text-muted">Sin imagen</span>

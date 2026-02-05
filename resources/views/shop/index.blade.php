@@ -25,7 +25,7 @@
                             @foreach($products->take(5) as $index => $product)
                                 <div class="carousel-item {{ $index === 0 ? 'active' : '' }}">
                                     @if($product->coverImage())
-                                        <img src="{{ asset('storage/' . $product->coverImage()->path) }}" class="d-block w-100" style="height:260px; object-fit:cover;" alt="{{ $product->name }}">
+                                        <img src="{{ $product->coverImage()->url }}" class="d-block w-100" style="height:260px; object-fit:cover;" alt="{{ $product->name }}">
                                     @else
                                         <div class="d-flex align-items-center justify-content-center bg-body-secondary" style="height:260px;">
                                             <div class="text-center">
@@ -109,7 +109,7 @@
         <div class="col-6 col-md-4 col-lg-3">
             <div class="card border-0 shadow-sm h-100 product-card">
                 @if($product->coverImage())
-                    <img class="card-img-top" src="{{ asset('storage/' . $product->coverImage()->path) }}" alt="{{ $product->name }}">
+                    <img class="card-img-top" src="{{ $product->coverImage()->url }}" alt="{{ $product->name }}">
                 @else
                     <div class="bg-body-secondary d-flex align-items-center justify-content-center placeholder-img">
                         <span class="text-muted">Sin imagen</span>

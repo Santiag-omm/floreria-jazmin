@@ -7,7 +7,7 @@
             <div class="carousel-inner">
                 @foreach($product->images as $index => $image)
                     <div class="carousel-item {{ $index === 0 ? 'active' : '' }}">
-                        <img class="d-block w-100 rounded" src="{{ asset('storage/' . $image->path) }}" alt="{{ $product->name }}">
+                            <img class="d-block w-100 rounded" src="{{ $image->url }}" alt="{{ $product->name }}">
                     </div>
                 @endforeach
                 @if($product->images->isEmpty())

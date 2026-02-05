@@ -1,0 +1,36 @@
+app = "floreria-jazmin"
+primary_region = "gru"
+
+[build]
+  dockerfile = "Dockerfile"
+
+[env]
+  APP_ENV = "production"
+  APP_DEBUG = "false"
+  LOG_CHANNEL = "stderr"
+  VIEW_COMPILED_PATH = "/var/www/html/storage/framework/views"
+  APP_URL = "https://floreria-jazmin.fly.dev"
+  SESSION_DRIVER = "cookie"
+  SESSION_SECURE_COOKIE = "true"
+  FILESYSTEM_DISK = "s3"
+  AWS_DEFAULT_REGION = "us-west-2"
+  AWS_BUCKET = "productos"
+  AWS_ENDPOINT = "https://rzwflcyrukdmtsufmjhq.storage.supabase.co/storage/v1/s3"
+  AWS_URL = "https://rzwflcyrukdmtsufmjhq.supabase.co/storage/v1/object/public/productos"
+  AWS_USE_PATH_STYLE_ENDPOINT = "true"
+
+[http_service]
+  internal_port = 80
+  force_https = true
+  auto_stop_machines = true
+  auto_start_machines = true
+  min_machines_running = 0
+  processes = ["app"]
+
+[deploy]
+  release_command = "php artisan db:seed --force"
+
+[[vm]]
+  cpu_kind = "shared"
+  cpus = 1
+  memory_mb = 512

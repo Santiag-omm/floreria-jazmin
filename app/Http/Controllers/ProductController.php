@@ -54,9 +54,11 @@ class ProductController extends Controller
             'is_premium' => $request->boolean('is_premium'),
         ]);
 
+        $disk = config('filesystems.default');
+
         if ($request->hasFile('images')) {
             foreach ($request->file('images') as $index => $image) {
-                $path = $image->store('products', 'public');
+                $path = $image->store('products', $disk);
                 ProductImage::create([
                     'product_id' => $product->id,
                     'path' => $path,
@@ -106,17 +108,19 @@ class ProductController extends Controller
             'is_premium' => $request->boolean('is_premium'),
         ]);
 
+        $disk = config('filesystems.default');
+
         if (!empty($data['delete_images'])) {
             $images = ProductImage::whereIn('id', $data['delete_images'])->get();
             foreach ($images as $image) {
-                Storage::disk('public')->delete($image->path);
+                Storage::disk($disk)->delete($image->path);
                 $image->delete();
             }
         }
 
         if ($request->hasFile('images')) {
             foreach ($request->file('images') as $index => $image) {
-                $path = $image->store('products', 'public');
+                $path = $image->store('products', $disk);
                 ProductImage::create([
                     'product_id' => $product->id,
                     'path' => $path,
@@ -138,8 +142,10 @@ class ProductController extends Controller
 
     public function destroy(Product $product): RedirectResponse
     {
+        $disk = config('filesystems.default');
+
         foreach ($product->images as $image) {
-            Storage::disk('public')->delete($image->path);
+            Storage::disk($disk)->delete($image->path);
         }
         $product->delete();
 
