@@ -26,8 +26,10 @@ class ShopController extends Controller
 
         $page = request()->integer('page', 1);
         $products = Cache::remember("shop.products.page.{$page}", now()->addMinutes(5), function () {
-            return Product::with(['images' => function ($query) {
-                    $query->where('is_cover', true);
+            return Product::select(['id', 'category_id', 'name', 'slug', 'price', 'stock', 'is_active', 'is_premium', 'created_at'])
+                ->with(['images' => function ($query) {
+                    $query->select(['id', 'product_id', 'path', 'is_cover'])
+                        ->where('is_cover', true);
                 }])
                 ->where('is_active', true)
                 ->latest()
@@ -44,7 +46,8 @@ class ShopController extends Controller
             return Promotion::active()->get();
         });
         $related = Cache::remember("shop.related.{$product->id}", now()->addMinutes(5), function () use ($product) {
-            return Product::where('category_id', $product->category_id)
+            return Product::select(['id', 'category_id', 'name', 'slug', 'price', 'stock', 'is_active', 'is_premium', 'created_at'])
+                ->where('category_id', $product->category_id)
                 ->where('id', '!=', $product->id)
                 ->limit(4)
                 ->get();
@@ -64,8 +67,10 @@ class ShopController extends Controller
         $page = request()->integer('page', 1);
         $products = Cache::remember("shop.category.{$category->id}.page.{$page}", now()->addMinutes(5), function () use ($category) {
             return $category->products()
+                ->select(['products.id', 'products.category_id', 'products.name', 'products.slug', 'products.price', 'products.stock', 'products.is_active', 'products.is_premium', 'products.created_at'])
                 ->with(['images' => function ($query) {
-                    $query->where('is_cover', true);
+                    $query->select(['id', 'product_id', 'path', 'is_cover'])
+                        ->where('is_cover', true);
                 }])
                 ->where('is_active', true)
                 ->simplePaginate(12);
