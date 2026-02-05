@@ -26,10 +26,12 @@ class ShopController extends Controller
 
         $page = request()->integer('page', 1);
         $products = Cache::remember("shop.products.page.{$page}", now()->addMinutes(5), function () {
-            return Product::with('images')
+            return Product::with(['images' => function ($query) {
+                    $query->where('is_cover', true);
+                }])
                 ->where('is_active', true)
                 ->latest()
-                ->paginate(12);
+                ->simplePaginate(12);
         });
 
         return view('shop.index', compact('categories', 'promotions', 'activePromotions', 'products'));
@@ -61,7 +63,12 @@ class ShopController extends Controller
         });
         $page = request()->integer('page', 1);
         $products = Cache::remember("shop.category.{$category->id}.page.{$page}", now()->addMinutes(5), function () use ($category) {
-            return $category->products()->where('is_active', true)->paginate(12);
+            return $category->products()
+                ->with(['images' => function ($query) {
+                    $query->where('is_cover', true);
+                }])
+                ->where('is_active', true)
+                ->simplePaginate(12);
         });
 
         return view('shop.category', compact('category', 'categories', 'products', 'activePromotions'));
